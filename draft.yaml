@@ -1,93 +1,46 @@
 models:
   Mobil:
-    merk: string:200  # Atribut untuk menyimpan merk mobil, tipe data string dengan panjang maksimal 200 karakter
-    model: string:200  # Atribut untuk menyimpan model mobil, tipe data string dengan panjang maksimal 200 karakter
-    tahun: year  # Atribut untuk menyimpan tahun pembuatan mobil, tipe data tahun
-    harga_per_hari: decimal(8, 2)  # Atribut untuk menyimpan harga sewa per hari, tipe data desimal dengan 8 digit dan 2 digit desimal
-    status: enum: ['tersedia', 'disewa']  # Atribut untuk menyimpan status mobil, tipe data enum dengan nilai 'tersedia' atau 'disewa'
-    warna: string:100  # Atribut untuk menyimpan warna mobil, tipe data string dengan panjang maksimal 100 karakter
-    nomor_polisi: string:100  # Atribut untuk menyimpan nomor polisi mobil, tipe data string dengan panjang maksimal 100 karakter
-    deskripsi: text  # Atribut untuk menyimpan deskripsi mobil, tipe data teks
+    merk: string:200
+    model: string:200
+    tahun: year
+    harga_per_hari: decimal(8, 2)
+    status: enum:tersedia,disewa
+    warna: string:100
+    nomor_polisi: string:100
+    deskripsi: text
     relationships:
-      hasMany: Pemesanan  # Relasi one-to-many dengan model Pemesanan
-    timestamps: true  # Menambahkan atribut created_at dan updated_at secara otomatis
+      hasMany: Pemesanan
 
   Penyewa:
-    nama: string:200  # Atribut untuk menyimpan nama penyewa, tipe data string dengan panjang maksimal 200 karakter
-    email: string:200: unique  # Atribut untuk menyimpan email penyewa, tipe data string dengan panjang maksimal 200 karakter dan harus unik
-    nomor_telepon: string:15  # Atribut untuk menyimpan nomor telepon penyewa, tipe data string dengan panjang maksimal 15 karakter
-    alamat: text  # Atribut untuk menyimpan alamat penyewa, tipe data teks
-    nomor_ktp: string:50  # Atribut untuk menyimpan nomor KTP penyewa, tipe data string dengan panjang maksimal 50 karakter
-    tanggal_lahir: date  # Atribut untuk menyimpan tanggal lahir penyewa, tipe data tanggal
+    nama: string:200
+    email: string:200
+    nomor_telepon: string:15
+    alamat: text
+    nomor_ktp: string:50
+    tanggal_lahir: date
     relationships:
-      hasMany: Pemesanan  # Relasi one-to-many dengan model Pemesanan
-    timestamps: true  # Menambahkan atribut created_at dan updated_at secara otomatis
+      hasMany: Pemesanan
 
   Pemesanan:
-    mobil_id: id  # Atribut untuk menyimpan ID mobil yang dipesan, tipe data ID
-    penyewa_id: id  # Atribut untuk menyimpan ID penyewa yang memesan, tipe data ID
-    tanggal_mulai: date  # Atribut untuk menyimpan tanggal mulai pemesanan, tipe data tanggal
-    tanggal_selesai: date  # Atribut untuk menyimpan tanggal selesai pemesanan, tipe data tanggal
-    total_harga: decimal(10, 2)  # Atribut untuk menyimpan total harga pemesanan, tipe data desimal dengan 10 digit dan 2 digit desimal
-    status: enum: ['pending', 'dibayar', 'selesai', 'dibatalkan']  # Atribut untuk menyimpan status pemesanan, tipe data enum dengan nilai 'pending', 'dibayar', 'selesai', atau 'dibatalkan'
+    mobil_id: id
+    penyewa_id: id
+    tanggal_mulai: date
+    tanggal_selesai: date
+    total_harga: decimal(10, 2)
+    status: enum:pending,dibayar,selesai,dibatalkan
     relationships:
-      belongsTo: Mobil  # Relasi many-to-one dengan model Mobil
-      belongsTo: Penyewa  # Relasi many-to-one dengan model Penyewa
-      hasMany: Pembayaran  # Relasi one-to-many dengan model Pembayaran
-    timestamps: true  # Menambahkan atribut created_at dan updated_at secara otomatis
+      belongsTo:
+        - Mobil
+        - Penyewa
+      hasMany: Pembayaran
 
   Pembayaran:
-    pemesanan_id: id  # Atribut untuk menyimpan ID pemesanan yang dibayar, tipe data ID
-    metode_pembayaran: enum: ['transfer', 'kartu_kredit', 'e-wallet']  # Atribut untuk menyimpan metode pembayaran, tipe data enum dengan nilai 'transfer', 'kartu_kredit', atau 'e-wallet'
-    jumlah_pembayaran: decimal(10, 2)  # Atribut untuk menyimpan jumlah pembayaran, tipe data desimal dengan 10 digit dan 2 digit desimal
-    tanggal_pembayaran: datetime  # Atribut untuk menyimpan tanggal dan waktu pembayaran, tipe data datetime
-    status: enum: ['berhasil', 'gagal']  # Atribut untuk menyimpan status pembayaran, tipe data enum dengan nilai 'berhasil' atau 'gagal'
+    pemesanan_id: id
+    metode_pembayaran: enum:transfer,kartu_kredit,e-wallet
+    jumlah_pembayaran: decimal(10, 2)
+    tanggal_pembayaran: datetime
+    status: enum:berhasil,gagal
     relationships:
-      belongsTo: Pemesanan  # Relasi many-to-one dengan model Pemesanan
-    timestamps: true  # Menambahkan atribut created_at dan updated_at secara otomatis
+      belongsTo: Pemesanan
 
-controllers:
-  MobilController:
-    index: return all  # Mengembalikan semua data mobil
-    show: return mobil  # Mengembalikan data mobil berdasarkan ID
-    create: show form  # Menampilkan form untuk membuat mobil baru
-    store: create mobil  # Menyimpan data mobil baru
-    edit: show form  # Menampilkan form untuk mengedit data mobil
-    update: update mobil  # Memperbarui data mobil
-    destroy: delete mobil  # Menghapus data mobil
-
-  PenyewaController:
-    index: return all  # Mengembalikan semua data penyewa
-    show: return penyewa  # Mengembalikan data penyewa berdasarkan ID
-    create: show form  # Menampilkan form untuk membuat penyewa baru
-    store: create penyewa  # Menyimpan data penyewa baru
-    edit: show form  # Menampilkan form untuk mengedit data penyewa
-    update: update penyewa  # Memperbarui data penyewa
-    destroy: delete penyewa  # Menghapus data penyewa
-
-  PemesananController:
-    index: return all  # Mengembalikan semua data pemesanan
-    show: return pemesanan  # Mengembalikan data pemesanan berdasarkan ID
-    create: show form  # Menampilkan form untuk membuat pemesanan baru
-    store: create pemesanan  # Menyimpan data pemesanan baru
-    edit: show form  # Menampilkan form untuk mengedit data pemesanan
-    update: update pemesanan  # Memperbarui data pemesanan
-    destroy: delete pemesanan  # Menghapus data pemesanan
-
-  PembayaranController:
-    index: return all  # Mengembalikan semua data pembayaran
-    show: return pembayaran  # Mengembalikan data pembayaran berdasarkan ID
-    create: show form  # Menampilkan form untuk membuat pembayaran baru
-    store: create pembayaran  # Menyimpan data pembayaran baru
-    update: update pembayaran  # Memperbarui data pembayaran
-    destroy: delete pembayaran  # Menghapus data pembayaran
-
-routes:
-  web:
-    mobil: MobilController  # Rute untuk mengakses MobilController
-    penyewa: PenyewaController  # Rute untuk mengakses PenyewaController
-    pemesanan: PemesananController  # Rute untuk mengakses PemesananController
-    pembayaran: PembayaranController  # Rute untuk mengakses PembayaranController
-
-seeders:
-  Mobil, Penyewa, Pemesanan, Pembayaran  # Seeder untuk mengisi data awal pada tabel Mobil, Penyewa, Pemesanan, dan Pembayaran
+seeders: Mobil, Penyewa, Pemesanan, Pembayaran

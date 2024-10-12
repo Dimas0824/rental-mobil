@@ -1,0 +1,22 @@
+created:
+    - database/factories/MobilFactory.php
+    - database/factories/PenyewaFactory.php
+    - database/factories/PemesananFactory.php
+    - database/factories/PembayaranFactory.php
+    - database/migrations/2024_10_12_155833_create_mobils_table.php
+    - database/migrations/2024_10_12_155834_create_penyewas_table.php
+    - database/migrations/2024_10_12_155835_create_pemesanans_table.php
+    - database/migrations/2024_10_12_155836_create_pembayarans_table.php
+    - app/Models/Mobil.php
+    - app/Models/Penyewa.php
+    - app/Models/Pemesanan.php
+    - app/Models/Pembayaran.php
+    - database/seeders/MobilSeeder.php
+    - database/seeders/PenyewaSeeder.php
+    - database/seeders/PemesananSeeder.php
+    - database/seeders/PembayaranSeeder.php
+models:
+    Mobil: { merk: 'string:200', model: 'string:200', tahun: year, harga_per_hari: 'decimal(8, 2)', status: 'enum:tersedia,disewa', warna: 'string:100', nomor_polisi: 'string:100', deskripsi: text, relationships: { hasMany: Pemesanan } }
+    Penyewa: { nama: 'string:200', email: 'string:200', nomor_telepon: 'string:15', alamat: text, nomor_ktp: 'string:50', tanggal_lahir: date, relationships: { hasMany: Pemesanan } }
+    Pemesanan: { mobil_id: id, penyewa_id: id, tanggal_mulai: date, tanggal_selesai: date, total_harga: 'decimal(10, 2)', status: 'enum:pending,dibayar,selesai,dibatalkan', relationships: { belongsTo: 'Mobil Penyewa', hasMany: Pembayaran } }
+    Pembayaran: { pemesanan_id: id, metode_pembayaran: 'enum:transfer,kartu_kredit,e-wallet', jumlah_pembayaran: 'decimal(10, 2)', tanggal_pembayaran: datetime, status: 'enum:berhasil,gagal', relationships: { belongsTo: Pemesanan } }
