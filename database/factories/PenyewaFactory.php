@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 use App\Models\Penyewa;
 
 class PenyewaFactory extends Factory
@@ -21,12 +20,12 @@ class PenyewaFactory extends Factory
     public function definition(): array
     {
         return [
-            'nama' => $this->faker->regexify('[A-Za-z0-9]{200}'),
-            'email' => $this->faker->safeEmail(),
-            'nomor_telepon' => $this->faker->regexify('[A-Za-z0-9]{15}'),
-            'alamat' => $this->faker->text(),
-            'nomor_ktp' => $this->faker->regexify('[A-Za-z0-9]{50}'),
-            'tanggal_lahir' => $this->faker->date(),
+            'nama' => $this->faker->name(), // Menggunakan nama acak
+            'email' => $this->faker->safeEmail(), // Menggunakan email acak yang aman
+            'nomor_telepon' => $this->faker->phoneNumber(), // Menggunakan nomor telepon acak
+            'alamat' => $this->faker->address(), // Menggunakan alamat acak
+            'nomor_ktp' => $this->faker->regexify('[0-9]{16}'), // Menggunakan format acak untuk nomor KTP (16 digit angka)
+            'tanggal_lahir' => $this->faker->date(), // Menggunakan tanggal acak
         ];
     }
 }
