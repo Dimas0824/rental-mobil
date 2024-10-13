@@ -23,15 +23,12 @@ models:
 
   Pemesanan:
     mobil_id: id
-    penyewa_id: id
     tanggal_mulai: date
     tanggal_selesai: date
     total_harga: decimal(10, 2)
     status: enum:pending,dibayar,selesai,dibatalkan
     relationships:
-      belongsTo:
-        - Mobil
-        - Penyewa
+      belongsTo: Mobil
       hasMany: Pembayaran
 
   Pembayaran:

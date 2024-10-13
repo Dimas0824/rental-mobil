@@ -18,12 +18,10 @@ class Pemesanan extends Model
      */
     protected $fillable = [
         'mobil_id',
-        'penyewa_id',
         'tanggal_mulai',
         'tanggal_selesai',
         'total_harga',
         'status',
-        'mobil_penyewa_id',
     ];
 
     /**
@@ -34,25 +32,13 @@ class Pemesanan extends Model
     protected $casts = [
         'id' => 'integer',
         'mobil_id' => 'integer',
-        'penyewa_id' => 'integer',
         'tanggal_mulai' => 'date',
         'tanggal_selesai' => 'date',
-        'mobil_penyewa_id' => 'integer',
     ];
-
-    public function mobilPenyewa(): BelongsTo
-    {
-        return $this->belongsTo(MobilPenyewa::class);
-    }
 
     public function mobil(): BelongsTo
     {
         return $this->belongsTo(Mobil::class);
-    }
-
-    public function penyewa(): BelongsTo
-    {
-        return $this->belongsTo(Penyewa::class);
     }
 
     public function pembayarans(): HasMany

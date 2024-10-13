@@ -14,12 +14,10 @@ return new class extends Migration
         Schema::create('pemesanans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('mobil_id');
-            $table->foreignId('penyewa_id');
             $table->date('tanggal_mulai');
             $table->date('tanggal_selesai');
             $table->string('total_harga');
             $table->enum('status', ["pending","dibayar","selesai","dibatalkan"]);
-            $table->foreignId('mobil_penyewa_id');
             $table->timestamps();
         });
     }
