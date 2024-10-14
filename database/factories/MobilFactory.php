@@ -43,7 +43,7 @@ class MobilFactory extends Factory
         $model = $this->faker->randomElement($carModels[$brand]);
 
         return [
-            'gambar' => $this->faker->imageUrl(640, 480, 'cars', true, 'Faker', true, 'jpg'), //gambar mobil acak
+            'gambar' => 'https://picsum.photos/640/480?random=' . $this->faker->unique()->numberBetween(1, 1000), //gambar mobil acak dari Picsum
             'merk' => $brand, // Menggunakan merk mobil nyata
             'model' => $model, // Menggunakan model mobil nyata berdasarkan merk
             'tahun' => $this->faker->numberBetween(2000, 2024), // Tahun antara 2000 sampai 2024

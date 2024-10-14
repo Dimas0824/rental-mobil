@@ -101,7 +101,7 @@ class MobilResource extends Resource
                     ->schema([
                         Tables\Columns\ImageColumn::make('gambar')
                             ->label('Gambar')
-                            ->height(150)
+                            ->height(170)
                             ->width(230)
                             ->extraAttributes(['class' => 'rounded-lg'])
                             ->extraAttributes(['style' => 'margin-left: 8px; margin-top: 20px; margin-bottom: 20px;']),
