@@ -3,15 +3,12 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PemesananResource\Pages;
-use App\Filament\Resources\PemesananResource\RelationManagers;
 use App\Models\Pemesanan;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PemesananResource extends Resource
 {
@@ -24,16 +21,21 @@ class PemesananResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('mobil_id')
-                    ->relationship('mobil', 'id')
+                    ->relationship('mobil', 'merk') // Display 'merk' instead of 'id'
                     ->required(),
                 Forms\Components\DatePicker::make('tanggal_mulai')
                     ->required(),
                 Forms\Components\DatePicker::make('tanggal_selesai')
                     ->required(),
                 Forms\Components\TextInput::make('total_harga')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('status')
+                    ->disabled(),
+                Forms\Components\Select::make('status')
+                    ->options([
+                        'warning' => 'Pending',
+                        'success' => 'Dibayar',
+                        'selesai' => 'Selesai',
+                        'danger' => 'Dibatalkan',
+                    ])
                     ->required(),
             ]);
     }
@@ -42,8 +44,11 @@ class PemesananResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('mobil.id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('mobil.merk')
+                    ->label('Merk Mobil')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('mobil.model')
+                    ->label('Model Mobil')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('tanggal_mulai')
                     ->date()
@@ -64,23 +69,18 @@ class PemesananResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                // Add any filters if needed
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-            Tables\Actions\DeleteAction::make()
+                //add action bila dibutuhkan
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->bulkActions([]);
     }
 
     public static function getRelations(): array
     {
         return [
-            //
+            // Define any relations if needed
         ];
     }
 
@@ -88,8 +88,6 @@ class PemesananResource extends Resource
     {
         return [
             'index' => Pages\ListPemesanans::route('/'),
-            'create' => Pages\CreatePemesanan::route('/create'),
-            'edit' => Pages\EditPemesanan::route('/{record}/edit'),
         ];
     }
 }

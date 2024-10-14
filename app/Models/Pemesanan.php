@@ -11,11 +11,6 @@ class Pemesanan extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'mobil_id',
         'tanggal_mulai',
@@ -24,11 +19,6 @@ class Pemesanan extends Model
         'status',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
     protected $casts = [
         'id' => 'integer',
         'mobil_id' => 'integer',
@@ -44,5 +34,49 @@ class Pemesanan extends Model
     public function pembayarans(): HasMany
     {
         return $this->hasMany(Pembayaran::class);
+    }
+
+    // Hitung lama sewa
+    public function getLamaSewaAttribute()
+    {
+        // Pastikan tanggal mulai dan selesai valid
+        return $this->tanggal_mulai && $this->tanggal_selesai
+            ? max(0, $this->tanggal_selesai->diffInDays($this->tanggal_mulai))
+            : 0;
+    }
+
+    // Hitung total harga
+    public function getTotalHargaAttribute()
+    {
+        // Jika status dibatalkan, total_harga = 0
+        if ($this->status === 'dibatalkan') {
+            return 0;
+        }
+
+        // Pastikan harga per hari tersedia dari mobil
+        if (!isset($this->mobil->harga_per_hari)) {
+            return 0; // Jika tidak ada harga, total jadi 0
+        }
+
+        // Hitung total harga: lama sewa * harga per hari
+        $hargaPerHari = $this->mobil->harga_per_hari;
+        $lamaSewa = $this->lama_sewa;
+        return $lamaSewa * $hargaPerHari;
+    }
+
+    // Event saving untuk menyimpan total_harga secara otomatis
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($pemesanan) {
+            // Jika status dibatalkan, set total_harga = 0
+            if ($pemesanan->status === 'dibatalkan') {
+                $pemesanan->total_harga = 0;
+            } else {
+                // Hitung total harga untuk status lain
+                $pemesanan->total_harga = $pemesanan->getTotalHargaAttribute();
+            }
+        });
     }
 }
