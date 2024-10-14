@@ -16,6 +16,7 @@ class Mobil extends Model
      * @var array
      */
     protected $fillable = [
+        'gambar',
         'merk',
         'model',
         'tahun',

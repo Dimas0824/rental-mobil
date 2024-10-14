@@ -12,6 +12,6 @@ class MobilSeeder extends Seeder
      */
     public function run(): void
     {
-        Mobil::factory()->count(5)->create();
+        Mobil::factory()->count(10)->create();
     }
 }

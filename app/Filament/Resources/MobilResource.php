@@ -3,12 +3,20 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\MobilResource\Pages;
-use App\Filament\Resources\MobilResource\RelationManagers;
 use App\Models\Mobil;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Split as ComponentsSplit;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
+use Filament\Tables\Columns\Column;
+use Filament\Tables\Columns\Layout\Grid;
+use Filament\Tables\Columns\Layout\Split;
+use Filament\Tables\Columns\Layout\Stack;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -17,34 +25,67 @@ class MobilResource extends Resource
 {
     protected static ?string $model = Mobil::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-printer';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('merk')
-                    ->required()
-                    ->maxLength(200),
-                Forms\Components\TextInput::make('model')
-                    ->required()
-                    ->maxLength(200),
-                Forms\Components\TextInput::make('tahun')
-                    ->required(),
-                Forms\Components\TextInput::make('harga_per_hari')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('status')
-                    ->required(),
-                Forms\Components\TextInput::make('warna')
-                    ->required()
-                    ->maxLength(100),
-                Forms\Components\TextInput::make('nomor_polisi')
-                    ->required()
-                    ->maxLength(100),
+                Forms\Components\Grid::make(2) // Membuat form dua kolom
+                    ->schema([
+                        Forms\Components\Group::make()
+                            ->schema([
+                                Forms\Components\TextInput::make('merk')
+                                    ->label('Merk')
+                                    ->required()
+                                    ->maxLength(200),
+                                Forms\Components\TextInput::make('model')
+                                    ->label('Model')
+                                    ->required()
+                                    ->maxLength(200),
+                                Forms\Components\TextInput::make('tahun')
+                                    ->label('Tahun')
+                                    ->required(),
+                                Forms\Components\TextInput::make('harga_per_hari')
+                                    ->label('Harga per Hari')
+                                    ->required()
+                                    ->numeric()
+                                    ->prefix('Rp ')
+                                    ->helperText('Masukkan harga sewa per hari')
+                                    ->maxLength(255),
+                            ])
+                            ->columnSpan(1), // Kolom kiri
+
+                        Forms\Components\Group::make()
+                            ->schema([
+                                Forms\Components\Select::make('status')
+                                    ->label('Status')
+                                    ->options([
+                                        'tersedia' => 'Tersedia',
+                                        'disewa' => 'Disewa',
+                                    ])
+                                    ->required(),
+                                Forms\Components\TextInput::make('warna')
+                                    ->label('Warna')
+                                    ->required()
+                                    ->maxLength(100),
+                                Forms\Components\TextInput::make('nomor_polisi')
+                                    ->label('Nomor Polisi')
+                                    ->required()
+                                    ->maxLength(100),
+                            ])
+                            ->columnSpan(1), // Kolom kanan
+                    ]),
+                Forms\Components\FileUpload::make('gambar')
+                    ->label('Gambar Mobil')
+                    ->image()
+                    ->directory('mobil-images')
+                    ->nullable()
+                    ->columnSpanFull(), // Mengambil satu baris penuh
                 Forms\Components\Textarea::make('deskripsi')
+                    ->label('Deskripsi')
                     ->required()
-                    ->columnSpanFull(),
+                    ->columnSpanFull(), // Mengambil satu baris penuh
             ]);
     }
 
@@ -52,40 +93,74 @@ class MobilResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('merk')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('model')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('tahun'),
-                Tables\Columns\TextColumn::make('harga_per_hari')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('status'),
-                Tables\Columns\TextColumn::make('warna')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('nomor_polisi')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                grid::make()
+                    ->columns(1)
+                    ->schema([
+                        Tables\Columns\ImageColumn::make('gambar')
+                            ->label('Gambar')
+                            ->size(150)
+                            ->circular()
+                            ->extraAttributes(['class' => 'mx-auto']),
+
+                        // Mengelompokkan merk dan model dalam satu baris
+                        Tables\Columns\Layout\Grid::make()
+                            ->columns(2) // Mengatur merk dan model dalam satu baris
+                            ->schema([
+                                Tables\Columns\TextColumn::make('merk')
+                                    ->label('Merk')
+                                    ->searchable()
+                                    ->sortable()
+                                    ->weight(FontWeight::ExtraBold)
+                                    ->extraAttributes(['class' => 'text-center']),
+
+                                Tables\Columns\TextColumn::make('model')
+                                    ->label('Model')
+                                    ->searchable()
+                                    ->sortable()
+                                    ->extraAttributes(['class' => 'text-center']),
+                            ])
+                            ->extraAttributes(['class' => 'flex justify-center items-center space-x-2']),
+
+                        // Tahun di bawah merk dan model
+                        Tables\Columns\TextColumn::make('tahun')
+                            ->label('Tahun')
+                            ->sortable(),
+
+                        Tables\Columns\TextColumn::make('harga_per_hari')
+                            ->label('Harga per Hari')
+                            ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 2))
+                            ->sortable(),
+                        Tables\Columns\TextColumn::make('status')
+                            ->label('Status')
+                            ->badge()
+                            ->colors([
+                                'success' => 'tersedia',
+                                'danger' => 'disewa',
+                            ])
+                            ->sortable(),
+                        Tables\Columns\TextColumn::make('warna')
+                            ->label('Warna')
+                            ->searchable(),
+                        Tables\Columns\TextColumn::make('nomor_polisi')
+                            ->label('Nomor Polisi')
+                            ->searchable(),
+                    ])
             ])
+            ->contentGrid(['md' => 2, 'xl' => 3])
+
             ->filters([
-                //
+                // Tambahkan filter jika diperlukan
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
+
+
 
     public static function getRelations(): array
     {
