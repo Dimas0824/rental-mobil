@@ -31,7 +31,8 @@ class MobilResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Grid::make(2) // Membuat form dua kolom
+                Section::make('Informasi Mobil')
+                    ->columns(2)
                     ->schema([
                         Forms\Components\Group::make()
                             ->schema([
@@ -51,8 +52,7 @@ class MobilResource extends Resource
                                     ->required()
                                     ->numeric()
                                     ->prefix('Rp ')
-                                    ->helperText('Masukkan harga sewa per hari')
-                                    ->maxLength(255),
+                                    ->helperText('Masukkan harga sewa per hari'),
                             ])
                             ->columnSpan(1), // Kolom kiri
 
@@ -76,16 +76,19 @@ class MobilResource extends Resource
                             ])
                             ->columnSpan(1), // Kolom kanan
                     ]),
-                Forms\Components\FileUpload::make('gambar')
-                    ->label('Gambar Mobil')
-                    ->image()
-                    ->directory('mobil-images')
-                    ->nullable()
-                    ->columnSpanFull(), // Mengambil satu baris penuh
-                Forms\Components\Textarea::make('deskripsi')
-                    ->label('Deskripsi')
-                    ->required()
-                    ->columnSpanFull(), // Mengambil satu baris penuh
+                section::make('Upload Gambar dan Deskripsi')
+                    ->schema([
+                        Forms\Components\FileUpload::make('gambar')
+                            ->label('Gambar Mobil')
+                            ->image()
+                            ->directory('mobil-images')
+                            ->nullable()
+                            ->columnSpanFull(), // Mengambil satu baris penuh
+                        Forms\Components\Textarea::make('deskripsi')
+                            ->label('Deskripsi')
+                            ->required()
+                            ->columnSpanFull(), // Mengambil satu baris penuh
+                    ])
             ]);
     }
 
@@ -98,9 +101,10 @@ class MobilResource extends Resource
                     ->schema([
                         Tables\Columns\ImageColumn::make('gambar')
                             ->label('Gambar')
-                            ->size(150)
-                            ->circular()
-                            ->extraAttributes(['style' => 'margin-left: 50px; margin-top: 20px; margin-bottom: 20px ']),
+                            ->height(150)
+                            ->width(230)
+                            ->extraAttributes(['class' => 'rounded-lg'])
+                            ->extraAttributes(['style' => 'margin-left: 8px; margin-top: 20px; margin-bottom: 20px;']),
 
                         // Mengelompokkan merk dan model dalam satu baris
                         Tables\Columns\Layout\Grid::make()
@@ -111,28 +115,26 @@ class MobilResource extends Resource
                                     ->searchable()
                                     ->sortable()
                                     ->weight(FontWeight::ExtraBold)
-                                    ->extraAttributes(['class' => 'text-center']),
+                                    ->extraAttributes(['class' => 'text-left']),
 
                                 Tables\Columns\TextColumn::make('model')
                                     ->label('Model')
                                     ->searchable()
                                     ->sortable()
-                                    ->extraAttributes(['class' => 'text-center']),
-
-                                // Tahun di bawah merk dan model
-                                Tables\Columns\TextColumn::make('tahun')
-                                    ->label('Tahun')
-                                    ->sortable()
-                                    ->extraAttributes(['class' => 'text-center']),
+                                    ->weight(FontWeight::Bold)
+                                    ->extraAttributes(['class' => 'text-left']),
 
                             ])
-                            ->extraAttributes(['class' => 'flex justify-center items-center space-x-2']),
+                            ->extraAttributes(['class' => 'flex justify-left items-center space-x-2']),
 
 
                         Tables\Columns\TextColumn::make('harga_per_hari')
                             ->label('Harga per Hari')
                             ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 2))
                             ->sortable(),
+                        Tables\Columns\TextColumn::make('nomor_polisi')
+                            ->label('Nomor Polisi')
+                            ->searchable(),
                         Tables\Columns\TextColumn::make('status')
                             ->label('Status')
                             ->badge()
@@ -141,12 +143,6 @@ class MobilResource extends Resource
                                 'danger' => 'disewa',
                             ])
                             ->sortable(),
-                        Tables\Columns\TextColumn::make('warna')
-                            ->label('Warna')
-                            ->searchable(),
-                        Tables\Columns\TextColumn::make('nomor_polisi')
-                            ->label('Nomor Polisi')
-                            ->searchable(),
                     ])
             ])
             ->contentGrid(['md' => 2, 'xl' => 3])

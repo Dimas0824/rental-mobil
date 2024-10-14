@@ -9,6 +9,7 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateMobil extends CreateRecord
 {
     protected static string $resource = MobilResource::class;
+    protected static bool $canCreateAnother = false;
 
     //customize redirect after create
     public function getRedirectUrl(): string
