@@ -12,6 +12,6 @@ class PenyewaSeeder extends Seeder
      */
     public function run(): void
     {
-        Penyewa::factory()->count(5)->create();
+        Penyewa::factory()->count(10)->create();
     }
 }

@@ -36,6 +36,7 @@ class Pemesanan extends Model
         return $this->hasMany(Pembayaran::class);
     }
 
+<<<<<<< Updated upstream
     // Hitung lama sewa
     public function getLamaSewaAttribute()
     {
@@ -78,5 +79,30 @@ class Pemesanan extends Model
                 $pemesanan->total_harga = $pemesanan->getTotalHargaAttribute();
             }
         });
+=======
+    public function penyewa(): BelongsTo
+    {
+        return $this->belongsTo(Penyewa::class);
+    }
+
+    public function calculateTotalHarga()
+    {
+        // Jika status adalah "pending" atau "dibatalkan", kembalikan 0
+        if (in_array($this->status, ['pending', 'dibatalkan'])) {
+            return 'Rp 0';
+        }
+
+        // Hitung jumlah hari dari tanggal mulai sampai tanggal selesai
+        $days = $this->tanggal_mulai->diffInDays($this->tanggal_selesai);
+
+        // Ambil harga per hari dari mobil yang terkait
+        $hargaPerHari = $this->mobil->harga_per_hari;
+
+        // Hitung total harga
+        $totalHarga = $days * $hargaPerHari;
+
+        // Format dalam bentuk Rupiah
+        return 'Rp ' . number_format($totalHarga, 0, ',', '.');
+>>>>>>> Stashed changes
     }
 }

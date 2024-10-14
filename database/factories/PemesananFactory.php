@@ -22,10 +22,16 @@ class PemesananFactory extends Factory
 
         return [
             'mobil_id' => Mobil::factory(),
+<<<<<<< Updated upstream
             'tanggal_mulai' => $tanggal_mulai,
             'tanggal_selesai' => $tanggal_selesai,
             'total_harga' => $status === 'dibatalkan' ? 0 : null, // If canceled, total_harga is 0
             'status' => $status,
+=======
+            'tanggal_mulai' => $this->faker->date(),
+            'tanggal_selesai' => $this->faker->date(),
+            'status' => $this->faker->randomElement(["pending", "dibayar", "selesai", "dibatalkan"]),
+>>>>>>> Stashed changes
         ];
     }
 }

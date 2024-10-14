@@ -60,6 +60,13 @@ class PenyewaResource extends Resource
                 Tables\Columns\TextColumn::make('tanggal_lahir')
                     ->date()
                     ->sortable(),
+                // Tambahkan kolom untuk menampilkan merk dan model mobil
+                Tables\Columns\TextColumn::make('pemesanans.mobil.merk')
+                    ->label('Merk Mobil')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('pemesanans.mobil.model')
+                    ->label('Model Mobil')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -74,7 +81,7 @@ class PenyewaResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-            Tables\Actions\DeleteAction::make()
+                Tables\Actions\DeleteAction::make()
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

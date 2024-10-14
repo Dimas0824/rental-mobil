@@ -50,7 +50,7 @@ class MobilFactory extends Factory
             'harga_per_hari' => $this->faker->randomFloat(2, 200000, 1500000), // Harga sewa per hari antara 200 ribu hingga 1,5 juta
             'status' => $this->faker->randomElement(['tersedia', 'disewa']), // Status mobil
             'warna' => $this->faker->safeColorName(), // Menggunakan warna yang umum
-            'nomor_polisi' => strtoupper($this->faker->bothify('? ### ??')), // Menggunakan format plat nomor polisi Indonesia
+            'nomor_polisi' => strtoupper($this->faker->bothify('? #### ??')), // Menggunakan format plat nomor polisi Indonesia
             'deskripsi' => $this->faker->realText(100), // Deskripsi dengan teks acak yang lebih panjang
         ];
     }

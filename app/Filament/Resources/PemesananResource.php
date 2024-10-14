@@ -21,7 +21,12 @@ class PemesananResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('mobil_id')
+<<<<<<< Updated upstream
                     ->relationship('mobil', 'merk') // Display 'merk' instead of 'id'
+=======
+                    ->relationship('mobil', 'merk') // Gunakan merk untuk ditampilkan
+                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->merk} - {$record->model}") // Gabungkan merk dan model
+>>>>>>> Stashed changes
                     ->required(),
                 Forms\Components\DatePicker::make('tanggal_mulai')
                     ->required(),
@@ -40,6 +45,7 @@ class PemesananResource extends Resource
             ]);
     }
 
+
     public static function table(Table $table): Table
     {
         return $table
@@ -57,8 +63,19 @@ class PemesananResource extends Resource
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('total_harga')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('status'),
+                    ->label('Total Harga')
+                    ->getStateUsing(fn($record) => $record->calculateTotalHarga())
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->colors([
+                        'warning' => 'pending',
+                        'success' => 'dibayar',
+                        'danger' => 'dibatalkan',
+                        'secondary' => 'selesai',
+                    ])
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -72,9 +89,17 @@ class PemesananResource extends Resource
                 // Add any filters if needed
             ])
             ->actions([
+<<<<<<< Updated upstream
                 //add action bila dibutuhkan
             ])
             ->bulkActions([]);
+=======
+                //add when needed
+            ])
+            ->bulkActions([
+                //add when needed
+            ]);
+>>>>>>> Stashed changes
     }
 
     public static function getRelations(): array

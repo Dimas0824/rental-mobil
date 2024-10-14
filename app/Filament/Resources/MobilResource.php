@@ -64,7 +64,7 @@ class MobilResource extends Resource
                                         'tersedia' => 'Tersedia',
                                         'disewa' => 'Disewa',
                                     ])
-                                    ->required(),
+                                    ->disabled(),
                                 Forms\Components\TextInput::make('warna')
                                     ->label('Warna')
                                     ->required()
