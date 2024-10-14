@@ -100,11 +100,11 @@ class MobilResource extends Resource
                             ->label('Gambar')
                             ->size(150)
                             ->circular()
-                            ->extraAttributes(['class' => 'mx-auto']),
+                            ->extraAttributes(['style' => 'margin-left: 50px; margin-top: 20px; margin-bottom: 20px ']),
 
                         // Mengelompokkan merk dan model dalam satu baris
                         Tables\Columns\Layout\Grid::make()
-                            ->columns(2) // Mengatur merk dan model dalam satu baris
+                            ->columns(3) // Mengatur merk dan model dalam satu baris
                             ->schema([
                                 Tables\Columns\TextColumn::make('merk')
                                     ->label('Merk')
@@ -118,13 +118,16 @@ class MobilResource extends Resource
                                     ->searchable()
                                     ->sortable()
                                     ->extraAttributes(['class' => 'text-center']),
+
+                                // Tahun di bawah merk dan model
+                                Tables\Columns\TextColumn::make('tahun')
+                                    ->label('Tahun')
+                                    ->sortable()
+                                    ->extraAttributes(['class' => 'text-center']),
+
                             ])
                             ->extraAttributes(['class' => 'flex justify-center items-center space-x-2']),
 
-                        // Tahun di bawah merk dan model
-                        Tables\Columns\TextColumn::make('tahun')
-                            ->label('Tahun')
-                            ->sortable(),
 
                         Tables\Columns\TextColumn::make('harga_per_hari')
                             ->label('Harga per Hari')
